@@ -1,7 +1,6 @@
 from __future__ import annotations
 
 import datetime
-import itertools
 import math
 import textwrap
 from io import BytesIO, StringIO
@@ -743,6 +742,7 @@ def rich_markup(
     no_wrap: Optional[bool] = None,
     overflow: Optional[str] = None,
     width: Optional[int] = None,
+    boxed: Optional[bool] = True,
 ) -> str:
     """Returns a codeblock with ANSI formatting for colour support.
 
@@ -768,6 +768,9 @@ def rich_markup(
         Overflow method: "ignore", "crop", "fold", or "ellipsis". Defaults to None.
     width: Optional[int]
         The width of the virtual terminal. Defaults to ``80`` characters long.
+    boxed: Optional[bool]
+        Whether to wrap the resulting ANSI markup in an ANSI code block. Defaults to True.
+        Note that the resulting markup will not render correctly outside of a code block.
 
 
     Returns
@@ -793,4 +796,7 @@ def rich_markup(
         no_wrap=no_wrap,
         overflow=overflow,
     )
-    return box(temp_console.file.getvalue(), lang="ansi")
+    if boxed:
+        return box(temp_console.file.getvalue(), lang="ansi")
+    else:
+        return temp_console.file.getvalue()
